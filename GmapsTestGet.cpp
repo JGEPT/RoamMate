@@ -1,32 +1,36 @@
-#include "httplib.h"
 #include <iostream>
+#define CPPHTTPLIB_OPENSSL_SUPPORT
+#include "httplib.h"
+#include <nlohmann/json.hpp>
 
-void httpGetRequest(const std::string &host, const std::string &path)
+int main()
 {
-    httplib::Client cli(host.c_str());
-    auto res = cli.Get(path.c_str());
+    // Your Google Maps API key
+    const std::string api_key = "AIzaSyBB68RllPp39IFsqWfInRCef_z0GbPqNVY";
 
+    // Origin and destination
+    const std::string origin = "New+York,NY";
+    const std::string destination = "Los+Angeles,CA";
+
+    // Construct the URL
+    std::string url = "/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&key=" + api_key;
+
+    // Create an HTTP client
+    httplib::Client client("https://maps.googleapis.com");
+
+    // Send a GET request
+    auto res = client.Get(url.c_str());
+
+    // Check if the request was successful
     if (res && res->status == 200)
     {
+        // Print the response body
         std::cout << res->body << std::endl;
     }
     else
     {
-        if (res)
-        {
-            std::cerr << "Request failed: HTTP status " << res->status << std::endl;
-        }
-        else
-        {
-            std::cerr << "Request failed: " << res.error() << std::endl;
-        }
+        std::cerr << "Error: " << res.error() << std::endl;
     }
-}
 
-int main()
-{
-    std::string host = "http://postman-echo.com";
-    std::string path = "/get";
-    httpGetRequest(host, path);
     return 0;
 }
