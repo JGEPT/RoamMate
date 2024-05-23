@@ -4,11 +4,12 @@
 #include <nlohmann/json.hpp>
 #define CPPHTTPLIB_OPENSSL_SUPPORT // Enable OpenSSL support in httplib
 #include "httplib.h"
+#include <regex> // For parsing time strings
 
 int main()
 {
     int distance = 0;
-    int fare = 0;
+    int fare = 0, Ttime = 0, Tdist = 0;
     float TaxiFare = 0;
     std::string distanceStr;
 
@@ -25,8 +26,12 @@ int main()
     std::cout << "Input your destination: ";
     getline(std::cin, destination);
 
+    // Replace spaces with '+' for URL encoding
+    std::replace(origin.begin(), origin.end(), ' ', '+');
+    std::replace(destination.begin(), destination.end(), ' ', '+');
+
     // Construct the URL
-    std::string url = "/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&mode=" + mode + "&key=" + api_key;
+    std::string url = "/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&mode=" + mode + "&key=" + api_key + "&computeAlternativeRoutes=true";
 
     // Create an HTTP client with SSL/TLS support
     httplib::SSLClient client("maps.googleapis.com");
@@ -62,9 +67,27 @@ int main()
                 std::cout << "Start Address: " << leg["start_address"] << std::endl;
                 std::cout << "End Address: " << leg["end_address"] << std::endl;
                 std::cout << "Duration: " << leg["duration"]["text"] << std::endl;
-                std::cout << "Duration: " << std::stof((std::string)leg["duration"]["text"]) << std::endl;
                 std::cout << "Distance: " << leg["distance"]["text"] << std::endl;
-                std::cout << "Distance: " << std::stof((std::string)leg["distance"]["text"]) << std::endl;
+
+                // Convert duration to minutes
+                std::string duration_str = leg["duration"]["text"];
+                std::regex hours_regex(R"((\d+)\s*hour[s]?)");
+                std::regex minutes_regex(R"((\d+)\s*min[s]?)");
+                std::smatch match;
+
+                Tdist = std::stoi((std::string) leg["distance"]["text"]);
+
+                // Extract hours
+                if (std::regex_search(duration_str, match, hours_regex))
+                {
+                    Ttime += std::stoi(match[1]) * 60;
+                }
+
+                // Extract minutes
+                if (std::regex_search(duration_str, match, minutes_regex))
+                {
+                    Ttime += std::stoi(match[1]);
+                }
 
                 auto steps = leg["steps"];
                 for (const auto &step : steps)
@@ -111,7 +134,9 @@ int main()
         std::cerr << "Error: " << res.error() << std::endl;
     }
 
-    std::cout << "Estimated jeepney fare: " << fare << "PHP" << std::endl;
+    TaxiFare = 45+(Ttime*3.10)+(Tdist*8.30);
+    std::cout << "Estimated jeepney fare: " << fare << " PHP" << std::endl;
+    std::cout << "Estimated taxi fare: " << TaxiFare << " PHP" << std::endl;
 
     return 0;
 }
