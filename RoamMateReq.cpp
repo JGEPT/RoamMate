@@ -16,11 +16,11 @@ class JeepRoute
     // Set class elements to public and declare needed variables
 public:
     int fare;
-    std::string steps;
     int duration;
     int distance;
+    std::string steps, FareSum;
 
-    JeepRoute() : fare(0), steps(""), duration(0), distance(0) {} // Contructor to initalize default values
+    JeepRoute() : fare(0), duration(0), distance(0), steps(""), FareSum("") {} // Contructor to initalize default values
 };
 
 // Create a class containing all the detials of the taxi route
@@ -173,7 +173,7 @@ JeepRoute parseJeepResp(const nlohmann::json &response)
         uniqueRoutes.insert(routeIdentifier); // Inserts the route identifier into the set
 
         details.fare = 0;
-        details.steps = "";
+        details.steps = "", details.FareSum = "";
         for (const auto &leg : legs) // Loops through the legs
         {
             // Prints out the duration and distace
@@ -205,12 +205,12 @@ JeepRoute parseJeepResp(const nlohmann::json &response)
                             if (distance > 5)
                             {
                                 details.fare += round(15 + (distance - 5) * 2.65);
-                                std::cout << transit["line"]["short_name"] << " fare: " << round(15 + (distance - 5) * 2.65) << " PHP" << std::endl;
+                                details.FareSum += (std::string)transit["line"]["short_name"] + " - " + std::to_string((int)round(15 + (distance - 5) * 2.65)) + " PHP ";
                             }
                             else
                             {
                                 details.fare += 15;
-                                std::cout << transit["line"]["short_name"] << " fare: 15 PHP" << std::endl;
+                                details.FareSum += (std::string)transit["line"]["short_name"] + " - 15 PHP ";
                             }
                         }
                     }
@@ -230,7 +230,7 @@ JeepRoute parseJeepResp(const nlohmann::json &response)
         }
         // Print out the entire route, and then the estimated fare.
         std::cout << "Route: " << details.steps << std::endl;
-        std::cout << "Estimated jeepney fare: " << details.fare << " PHP" << std::endl;
+        std::cout << "Fare summary: " << details.FareSum << " = " << details.fare << " PHP" << std::endl;
     }
     return details;
 }
