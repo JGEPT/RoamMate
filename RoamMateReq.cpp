@@ -15,12 +15,12 @@ class JeepRoute
 {
     // Set class elements to public and declare needed variables
 public:
-    int fare;
+    int fare, DiscFare;
     int duration;
     int distance;
-    std::string steps, FareSum;
+    std::string steps, FareSum, DiscSum;
 
-    JeepRoute() : fare(0), duration(0), distance(0), steps(""), FareSum("") {} // Contructor to initalize default values
+    JeepRoute() : fare(0), DiscFare(0), duration(0), distance(0), steps(""), FareSum(""), DiscSum("") {} // Contructor to initalize default values
 };
 
 // Create a class containing all the detials of the taxi route
@@ -172,8 +172,8 @@ JeepRoute parseJeepResp(const nlohmann::json &response)
         }
         uniqueRoutes.insert(routeIdentifier); // Inserts the route identifier into the set
 
-        details.fare = 0;
-        details.steps = "", details.FareSum = "";
+        details.fare = 0, details.DiscFare = 0;
+        details.steps = "", details.FareSum = "", details.DiscSum = "";
         for (const auto &leg : legs) // Loops through the legs
         {
             // Prints out the duration and distace
@@ -205,12 +205,16 @@ JeepRoute parseJeepResp(const nlohmann::json &response)
                             if (distance > 5)
                             {
                                 details.fare += round(15 + (distance - 5) * 2.65);
+                                details.DiscFare += round((15 + (distance - 5) * 2.65) * 0.80);
                                 details.FareSum += (std::string)transit["line"]["short_name"] + " - " + std::to_string((int)round(15 + (distance - 5) * 2.65)) + " PHP ";
+                                details.DiscSum += (std::string)transit["line"]["short_name"] + " - " + std::to_string((int)(round((15 + (distance - 5) * 2.65) * .80))) + " PHP ";
                             }
                             else
                             {
                                 details.fare += 15;
+                                details.DiscFare += 12;
                                 details.FareSum += (std::string)transit["line"]["short_name"] + " - 15 PHP ";
+                                details.DiscSum += (std::string)transit["line"]["short_name"] + " - 12 PHP ";
                             }
                         }
                     }
@@ -231,6 +235,7 @@ JeepRoute parseJeepResp(const nlohmann::json &response)
         // Print out the entire route, and then the estimated fare.
         std::cout << "Route: " << details.steps << std::endl;
         std::cout << "Fare summary: " << details.FareSum << " = " << details.fare << " PHP" << std::endl;
+        std::cout << "Discounted fare summary: " << details.DiscSum << " = " << details.DiscFare << " PHP" << std::endl;
     }
     return details;
 }
