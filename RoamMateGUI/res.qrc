@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>assets/Background.png</file>
+        <file>assets/UpIcon.PNG</file>
+    </qresource>
+</RCC>
