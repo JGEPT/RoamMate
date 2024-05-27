@@ -2,15 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "pannablewidget.h"
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -18,6 +12,7 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    PannableWidget *pannableWidget;
 };
+
 #endif // MAINWINDOW_H
