@@ -10,10 +10,12 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    pannableWidget.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    pannableWidget.h \
 
 FORMS += \
     mainwindow.ui
