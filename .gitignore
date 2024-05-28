@@ -73,3 +73,4 @@ CMakeLists.txt.user*
 *.exe
 *.idx
 /RoamMateGUI/build/Desktop_Qt_6_7_1_MinGW_64_bit-Debug
+/.vscode
