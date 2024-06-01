@@ -1,21 +1,23 @@
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT += core gui widgets
 
 CONFIG += c++17
 
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+# OpenSSL include and library paths
+INCLUDEPATH += "C:/OpenSSL-Win64/include" \
+               "C:/Qt/Tools/OpenSSL-Win64/include"
+
+LIBS += -LC:/Qt/Tools/OpenSSL-Win64/lib/VC/x64/MD \
+        -lssl -lcrypto -lws2_32 -lcrypt32 -pthread
 
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
-    pannableWidget.cpp
+    pannableWidget.cpp \
+    RoamMateReq.cpp
 
 HEADERS += \
     mainwindow.h \
-    pannableWidget.h \
+    pannableWidget.h
 
 FORMS += \
     mainwindow.ui
@@ -27,3 +29,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 RESOURCES += \
     res.qrc
+
+QMAKE_CXXFLAGS += -v
+

@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent) {
 
     // Create the pannable widget
-    pannableWidget = new PannableWidget(":/res/assets/Background.png", this);
+    pannableWidget = new PannableWidget(":/res/assets/background.png", this);
 
     // Set the pannable widget as the central widget of the main window
     setCentralWidget(pannableWidget);
