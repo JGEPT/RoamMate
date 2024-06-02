@@ -25,10 +25,6 @@ const std::string ApiKey = "AIzaSyBB68RllPp39IFsqWfInRCef_z0GbPqNVY";
 
 class RouteRequest
 {
-public:
-    RouteRequest(const std::string &origin, const std::string &destination)
-        : origin(origin), destination(destination) {}
-
 private:
     // Create a class containing all the details of the jeep route
     class JeepRoute
@@ -38,9 +34,9 @@ private:
         int fare, DiscFare;
         int duration;
         int distance;
-        std::string steps, FareSum, DiscSum;
+        std::string steps, FareSum, DiscSum, Route;
 
-        JeepRoute() : fare(0), DiscFare(0), duration(0), distance(0), steps(""), FareSum(""), DiscSum("") {} // Contructor to initalize default values
+        JeepRoute() : fare(0), DiscFare(0), duration(0), distance(0), steps(""), FareSum(""), DiscSum(""), Route("") {} // Contructor to initalize default values
     };
 
     // Create a class containing all the detials of the taxi route
@@ -50,9 +46,10 @@ private:
     public:
         int duration;
         float distance;
-        float fare;
+        int fare;
+        std::string Route;
 
-        TaxiRoute() : duration(0), distance(0.0f), fare(0.0f) {} // Contructor to initalize default values
+        TaxiRoute() : duration(0), distance(0.0f), fare(0.0f), Route("") {} // Contructor to initalize default values
 
         /*
         ================================================================================================================================================================
@@ -66,7 +63,7 @@ private:
         void CalcPrintFare() // Member function to calculate and print the fare
         {
             fare = 45 + (duration * 3.10) + (distance * 8.30);                   // Calculate the fare with the forumla
-            std::cout << "Estimated taxi fare: " << fare << " PHP" << std::endl; // Print the fare
+            Route += "Estimated taxi fare: " + std::to_string((int)round(fare)) + " PHP"+'\n';                  // Store the fare to the route string
         }
     };
 
@@ -74,7 +71,6 @@ private:
     std::string origin;
     std::string destination;
     std::string route;
-    double fare;
 
 public:
 /*
@@ -101,25 +97,19 @@ RETURNS     : This function returns a json that the google maps API sends.
         }
     }
 
-    void makeRequest()
+    std::string makeRequest(const std::string origin, const std::string destination)
     {
-        // Take user input for the origin and destination
-        std::string origin, destination;
-        std::cout << "Input your origin: ";
-        getline(std::cin, origin);
-        std::cout << "Input your destination: ";
-        getline(std::cin, destination);
-
+        std::string Route = "";
         // Make API request with transit mode for jeepney routes
         std::string transit_url = URL(origin, destination, "transit", ApiKey, "true");
         auto JeepResp = sendHTTPRequest(transit_url);
-        auto JeepDetails = parseJeepResp(JeepResp);
+        Route += parseJeepResp(JeepResp);
 
         // Make API request with driving mode for taxi routes
         std::string driving_url = URL(origin, destination, "driving", ApiKey, "false");
         auto TaxiResp = sendHTTPRequest(driving_url);
-        auto TaxiDetails = parseTaxiResp(TaxiResp);
-        return;
+        Route += parseTaxiResp(TaxiResp);
+        return Route;
     }
 
     /*
@@ -141,11 +131,11 @@ RETURNS     : This function returns a string which is the URL needed for the API
 FUNCTION	: parseJeepResp
 DESCRIPTION : This function parses the json for a transit route request from the google maps API.
 ARGUEMENTS  : This function's argument is json &response.
-RETURNS     : This function returns an object of the class JeepRoute.
+RETURNS     : This function returns nothing
 ================================================================================================================================================================
 */
 
-    JeepRoute parseJeepResp(const nlohmann::json &response)
+    std::string parseJeepResp(const nlohmann::json &response)
     {
         std::unordered_set<std::string> uniqueRoutes; // Declare the unordered set
         JeepRoute details;                            // Declare an object of the class JeepRoute
@@ -183,10 +173,9 @@ RETURNS     : This function returns an object of the class JeepRoute.
             details.steps = "", details.FareSum = "", details.DiscSum = "";
             for (const auto &leg : legs) // Loops through the legs
             {
-                // Prints out the duration and distace
-                std::cout << std::endl
-                          << "Duration: " << leg["duration"]["text"] << std::endl;
-                std::cout << "Distance: " << leg["distance"]["text"] << std::endl;
+                // Saves the duration and distance into a string
+                details.Route += '\n' + "Duration: " + (std::string)leg["duration"]["text"] +
+                                 '\n' + "Distance: " + (std::string)leg["distance"]["text"];
 
                 auto steps = leg["steps"];
                 int StepCount = 0;
@@ -237,14 +226,11 @@ RETURNS     : This function returns an object of the class JeepRoute.
                     }
                     StepCount++;
                 }
-                std::cout << std::endl;
             }
-            // Print out the entire route, and then the estimated fare.
-            std::cout << "Route: " << details.steps << std::endl;
-            std::cout << "Fare summary: " << details.FareSum << " = " << details.fare << " PHP" << std::endl;
-            std::cout << "Discounted fare summary: " << details.DiscSum << " = " << details.DiscFare << " PHP" << std::endl;
+            // Save the entire route and the estimated fare into a string.
+            details.Route += '\n' + "Route: " + details.steps + '\n' + "Fare summary: " + details.FareSum + " = " + std::to_string(details.fare) + " PHP" + '\n' + "Discounted fare summary: " + details.DiscSum + " = " + std::to_string(details.DiscFare) + " PHP" + '\n' + '\n';
         }
-        return details;
+        return details.Route;
     }
 
     /*
@@ -252,11 +238,11 @@ RETURNS     : This function returns an object of the class JeepRoute.
 FUNCTION	: parseTaxiResp
 DESCRIPTION : This function parses the json for a driving route request from the google maps API.
 ARGUEMENTS  : This function's argument is json &response.
-RETURNS     : This function returns an object of the class TaxiRoute.
+RETURNS     : This function returns nothing
 ================================================================================================================================================================
 */
 
-    TaxiRoute parseTaxiResp(const nlohmann::json &response)
+    std::string parseTaxiResp(const nlohmann::json &response)
     {
         TaxiRoute details; // Create an object of the class TaxiRoute
 
@@ -267,9 +253,7 @@ RETURNS     : This function returns an object of the class TaxiRoute.
             for (const auto &leg : legs) // Loop through the legs
             {
                 // Print the duration and distance for the taxi route
-                std::cout << std::endl
-                          << "Taxi Duration: " << leg["duration"]["text"] << std::endl;
-                std::cout << "Taxi Distance: " << leg["distance"]["text"] << std::endl;
+                details.Route += '\n'+"Taxi Duration: " + (std::string) leg["duration"]["text"] + '\n' + "Taxi Distance: " + (std::string)leg["distance"]["text"] + '\n';
                 // Parse the duration using regex to separete the hours and mins
                 std::string duration_str = leg["duration"]["text"];
                 std::regex hours_regex(R"((\d+)\s*hour[s]?)");  // Define the regex for the hours
@@ -288,6 +272,6 @@ RETURNS     : This function returns an object of the class TaxiRoute.
             }
         }
         details.CalcPrintFare(); // Call the CalcPrintFare function
-        return details;
+        return details.Route;
     }
 };

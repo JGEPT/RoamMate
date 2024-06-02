@@ -44,7 +44,7 @@ private:
         QPoint position;
     };
 
-    void addButton(const QString &iconPath, const QPoint &position);
+    void addButton(const QString &iconPath, const QPoint &position, int scale);
     void setButtonsVisible(bool visible);
     void drawMenu(QPainter &painter);
     void drawSearchMenu(QPainter &painter);
@@ -78,11 +78,7 @@ private:
     QLineEdit *destinationLineEdit;
     QString originInput;
     QString destinationInput;
-
-    // New members for route request and display
-    RouteRequest *routeRequest;
-    QLabel *routeLabel;
-    QLabel *fareLabel;
+    QString requestResultText;
 };
 
 #endif // PANNABLEWIDGET_H
