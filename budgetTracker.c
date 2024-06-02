@@ -21,6 +21,8 @@ void expense(struct BudgetTracker *tracker, float amount, char *jeepCode);
 void viewExpenses(struct BudgetTracker *tracker);
 void saveData(struct BudgetTracker *tracker);
 void loadData(struct BudgetTracker *tracker);
+void editExpense(struct BudgetTracker *tracker, int index, float newAmount, char *newJeepCode);
+void deleteExpense(struct BudgetTracker *tracker, int index);
 
 int main() {
     struct BudgetTracker tracker;
@@ -34,8 +36,10 @@ int main() {
         printf("1. Add Budget\n");
         printf("2. Add Expense\n");
         printf("3. View Expenses\n");
-        printf("4. Save Data\n");
-        printf("5. Exit\n");
+        printf("4. Edit Expense\n"); 
+        printf("5. Delete Expense\n"); 
+        printf("6. Save Data\n");
+        printf("7. Exit\n");
 
         int choice;
         printf("Enter your choice: ");
@@ -61,10 +65,28 @@ int main() {
                 viewExpenses(&tracker);
                 break;
             case 4:
+                printf("Enter what expense to edit (use 0 as the first, 1 as the second and so on): ");
+                int editIndex;
+                scanf("%d", &editIndex);
+                printf("Enter new expense amount PHP: ");
+                float newAmount;
+                scanf("%f", &newAmount);
+                char newJeepCode[50];
+                printf("Enter new jeep code or taxi name: ");
+                scanf("%s", newJeepCode);
+                editExpense(&tracker, editIndex, newAmount, newJeepCode);
+                break;
+            case 5:
+                printf("Enter what expense to delete (use 0 as the first, 1 as the second and so on): ");
+                int deleteIndex;
+                scanf("%d", &deleteIndex);
+                deleteExpense(&tracker, deleteIndex);
+                break;
+            case 6:
                 saveData(&tracker);
                 printf("Data saved successfully.\n");
                 break;
-            case 5:
+            case 7:
                 printf("Thank You!\n");
                 saveData(&tracker);
                 exit(0);
@@ -105,6 +127,7 @@ void viewExpenses(struct BudgetTracker *tracker) {
     }
 }
 
+
 void saveData(struct BudgetTracker *tracker) {
     FILE *file = fopen(FILENAME, "w");
     if (file != NULL) {
@@ -131,4 +154,29 @@ void loadData(struct BudgetTracker *tracker) {
     } else {
         printf("No previous data found.\n");
     }
+}
+
+void editExpense(struct BudgetTracker *tracker, int index, float newAmount, char *newJeepCode) {
+    if (index < 0 || index >= tracker->num_expenses) {
+        printf("Invalid expense index.\n");
+        return;
+    }
+    tracker->balance += tracker->expenses[index].amount; 
+    tracker->balance -= newAmount; 
+    tracker->expenses[index].amount = newAmount;
+    strcpy(tracker->expenses[index].jeepCode, newJeepCode);
+    printf("Expense edited successfully.\n");
+}
+
+void deleteExpense(struct BudgetTracker *tracker, int index) {
+    if (index < 0 || index >= tracker->num_expenses) {
+        printf("Invalid expense index.\n");
+        return;
+    }
+    tracker->balance += tracker->expenses[index].amount; 
+    for (int i = index; i < tracker->num_expenses - 1; i++) {
+        tracker->expenses[i] = tracker->expenses[i + 1]; 
+    }
+    tracker->num_expenses--;
+    printf("Expense deleted successfully.\n");
 }
