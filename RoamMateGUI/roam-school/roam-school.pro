@@ -11,11 +11,13 @@ CONFIG += c++17
 
 SOURCES += \
     dijkstra_algorithm.cpp \
+    imagewindow.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     dijkstra_algorithm.h \
+    imagewindow.h \
     mainwindow.h
 
 FORMS += \

@@ -1,11 +1,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "qplaintextedit.h"
 #include <QMainWindow>
 #include <QLabel>
 #include <QScrollArea>
 #include <QComboBox>
+#include <QPlainTextEdit>
+#include <QLineEdit>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,6 +26,8 @@ private slots:
     void submitButtonClicked();
     void on_sourceBox_currentIndexChanged();
     void on_destinationBox_currentIndexChanged();
+    void toggleButton2Clicked();
+
 
 private:
     Ui::MainWindow *ui;
@@ -35,5 +38,10 @@ private:
     QComboBox *destinationBox;
     QPlainTextEdit *outputTextEdit;
     QLineEdit *outputLineEdit;
+    QWidget *overlayWidget1;
+    QWidget *overlayWidget2;
+    QLabel *imageLabel;
+    QPixmap originalPixmap;
+
 };
 #endif // MAINWINDOW_H
