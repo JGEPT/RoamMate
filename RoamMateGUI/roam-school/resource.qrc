@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/resources">
+        <file>files/mapping.csv</file>
+        <file>files/MatrixCoordinateDistance.csv</file>
+        <file>files/magnifying.png</file>
+        <file>files/school-map.jpg</file>
+    </qresource>
+</RCC>
