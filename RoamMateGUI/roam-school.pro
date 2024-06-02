@@ -10,18 +10,18 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    RoamSchool.cpp \
     dijkstra_algorithm.cpp \
     imagewindow.cpp \
-    main.cpp \
-    mainwindow.cpp
+    main.cpp
 
 HEADERS += \
+    RoamSchool.h \
     dijkstra_algorithm.h \
-    imagewindow.h \
-    mainwindow.h
+    imagewindow.h
 
 FORMS += \
-    mainwindow.ui
+    RoamSchool.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -9,18 +9,28 @@ INCLUDEPATH += "C:/OpenSSL-Win64/include" \
 LIBS += -LC:/Qt/Tools/OpenSSL-Win64/lib/VC/x64/MD \
         -lssl -lcrypto -lws2_32 -lcrypt32 -pthread
 
+QT += svg
+
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
     pannableWidget.cpp \
-    RoamMateReq.cpp
+    RoamMateReq.cpp \
+    RoamSchool.cpp \
+    dijkstra_algorithm.cpp \
+    imagewindow.cpp
+
 
 HEADERS += \
     mainwindow.h \
-    pannableWidget.h
+    pannableWidget.h \
+    RoamSchool.h \
+    dijkstra_algorithm.h \
+    imagewindow.h \
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    RoamSchool.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

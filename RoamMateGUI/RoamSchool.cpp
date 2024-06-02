@@ -1,5 +1,4 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "RoamSchool.h"
 #include "imagewindow.h"
 #include "dijkstra_algorithm.h"
 #include <QFile>
@@ -19,13 +18,11 @@
 #include <QtSvg>
 #include <QSvgRenderer>
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+RoamSchool::RoamSchool(QWidget *parent)
+    : QWidget(parent)
 {
-    ui->setupUi(this);
 
-    QPixmap backgroundImage(":/resources/files/school-map.jpg");
+    QPixmap backgroundImage(":/res/files/school-map.jpg");
 
     // Scale the background image
     backgroundImage = backgroundImage.scaled(backgroundImage.size() * 0.5);
@@ -38,7 +35,6 @@ MainWindow::MainWindow(QWidget *parent)
     QScrollArea *scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(backgroundLabel);
-    setCentralWidget(scrollArea);
 
     // Create a widget to overlay on top of the background image
     overlayWidget1 = new QWidget(this);
@@ -107,14 +103,14 @@ MainWindow::MainWindow(QWidget *parent)
     sourceBox = new QComboBox(overlayWidget1);
     destinationBox = new QComboBox(overlayWidget1);
 
-    QString filepath = ":/resources/files/mapping.csv";
+    QString filepath = ":/res/files/mapping.csv";
     readToComboBoxFromFile(filepath);
 
     sourceBox->setCurrentIndex(0);
     destinationBox->setCurrentIndex(36);
 
-    connect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_sourceBox_currentIndexChanged);
-    connect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_destinationBox_currentIndexChanged);
+    connect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_sourceBox_currentIndexChanged);
+    connect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_destinationBox_currentIndexChanged);
 
     // Create the additional widgets for the first overlay widget
     outputTextEdit = new QPlainTextEdit(overlayWidget1);
@@ -124,7 +120,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QPushButton *submitButton = new QPushButton("Submit", overlayWidget1);
     // Connect the clicked signal of the QPushButton to the submitButtonClicked slot function
-    connect(submitButton, &QPushButton::clicked, this, &MainWindow::submitButtonClicked);
+    connect(submitButton, &QPushButton::clicked, this, &RoamSchool::submitButtonClicked);
 
     // Create labels for the first overlay widget
     QLabel *outputTextLabel = new QLabel("Shortest Path:", overlayWidget1);
@@ -144,7 +140,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Create the toggle button
     QToolButton *toggleButton = new QToolButton(this);
-    toggleButton->setIcon(QIcon(":/resources/files/magnifying.png")); // Add your icon here
+    toggleButton->setIcon(QIcon(":/res/files/magnifying.png")); // Add your icon here
     toggleButton->setIconSize(QSize(100, 100));
     toggleButton->setGeometry(10, 9, 35, 35);  // Adjust the size and position as needed
     toggleButton->setStyleSheet(stylesheet);
@@ -156,13 +152,13 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Create the toggle button for the second overlay widget
     QToolButton *toggleButton2 = new QToolButton(this);
-    toggleButton2->setIcon(QIcon(":/resources/files/point.png")); // Add your icon here
+    toggleButton2->setIcon(QIcon(":/res/files/point.png")); // Add your icon here
     toggleButton2->setIconSize(QSize(100, 100));
     toggleButton2->setGeometry(width() * 1.8, 9, 35, 35);  // Adjust the size and position as needed
     toggleButton2->setStyleSheet(stylesheet);
 
     // Connect the toggle button to open ImageWindow
-    connect(toggleButton2, &QToolButton::clicked, this, &MainWindow::toggleButton2Clicked);
+    connect(toggleButton2, &QToolButton::clicked, this, &RoamSchool::toggleButton2Clicked);
 
 
     // Ensure the overlay widgets and toggle button are always on top
@@ -170,14 +166,7 @@ MainWindow::MainWindow(QWidget *parent)
     toggleButton->raise();
 }
 
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
-
-
-void MainWindow::readToComboBoxFromFile(const QString &filePath) {
+void RoamSchool::readToComboBoxFromFile(const QString &filePath) {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         // Handle error if the file cannot be opened
@@ -199,17 +188,17 @@ void MainWindow::readToComboBoxFromFile(const QString &filePath) {
     file.close();
 }
 
-void MainWindow::toggleButton2Clicked()
+void RoamSchool::toggleButton2Clicked()
 {
     // Specify the file path to the image
-    QString imagePath = ":/resources/files/Legend.png"; // Update with your image file path
+    QString imagePath = ":/res/files/Legend.png"; // Update with your image file path
 
     // Open the ImageWindow with the specified image file path
     ImageWindow *imageWindow = new ImageWindow(imagePath, this);
     imageWindow->show();
 }
 
-void MainWindow::submitButtonClicked() {
+void RoamSchool::submitButtonClicked() {
     // Add your functionality here
     qDebug() << "Submit button clicked!";
 
@@ -217,7 +206,7 @@ void MainWindow::submitButtonClicked() {
     QString dest = destinationBox->currentText();
     int sourceNode, destNode;
 
-    QString filePath = ":/resources/files/mapping.csv";
+    QString filePath = ":/res/files/mapping.csv";
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         // Handle error if the file cannot be opened
@@ -257,7 +246,7 @@ void MainWindow::submitButtonClicked() {
     outputLineEdit->setText(combinedText);
 }
 
-void MainWindow::on_sourceBox_currentIndexChanged()
+void RoamSchool::on_sourceBox_currentIndexChanged()
 {
     QString selectedSource = sourceBox->currentText();
     QString selectedDestination = destinationBox->currentText();
@@ -266,28 +255,28 @@ void MainWindow::on_sourceBox_currentIndexChanged()
     // reset the selection in destinationBox
     if (selectedSource == selectedDestination) {
         // Disconnect the signal temporarily to avoid recursion
-        disconnect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_destinationBox_currentIndexChanged);
+        disconnect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_destinationBox_currentIndexChanged);
 
         // Reset the selection in destinationBox
         destinationBox->setCurrentIndex(-1);
 
         // Reconnect the signal
-        connect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_destinationBox_currentIndexChanged);
+        connect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_destinationBox_currentIndexChanged);
     }
 }
 
-void MainWindow::on_destinationBox_currentIndexChanged()
+void RoamSchool::on_destinationBox_currentIndexChanged()
 {
     // Retrieve the selected item text from destinationBox
     QString selectedItem = destinationBox->currentText();
 
     // Remove the selected item from sourceBox
-    disconnect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_sourceBox_currentIndexChanged);
+    disconnect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_sourceBox_currentIndexChanged);
     int indexToRemove = sourceBox->findText(selectedItem);
     if (indexToRemove != -1) {
         sourceBox->removeItem(indexToRemove);
     }
-    connect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_sourceBox_currentIndexChanged);
+    connect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_sourceBox_currentIndexChanged);
 }
 
 

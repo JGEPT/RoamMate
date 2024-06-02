@@ -23,5 +23,12 @@
         <file>assets/History.png</file>
         <file>assets/Destination.png</file>
         <file>assets/Origin.png</file>
+        <file>files/Legend.png</file>
+        <file>files/magnifying.png</file>
+        <file>files/mapping.csv</file>
+        <file>files/MatrixCoordinateDistance.csv</file>
+        <file>files/point.png</file>
+        <file>files/school-map.jpg</file>
+        <file>assets/Switch.png</file>
     </qresource>
 </RCC>

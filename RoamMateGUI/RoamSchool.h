@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef ROAMSCHOOL_H
+#define ROAMSCHOOL_H
 
 #include <QMainWindow>
 #include <QLabel>
@@ -8,19 +8,12 @@
 #include <QPlainTextEdit>
 #include <QLineEdit>
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow
+class RoamSchool : public QWidget
 {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    RoamSchool(QWidget *parent = nullptr);
 
 private slots:
     void submitButtonClicked();
@@ -30,7 +23,6 @@ private slots:
 
 
 private:
-    Ui::MainWindow *ui;
     void readToComboBoxFromFile(const QString &filePath);
     QLabel *backgroundLabel;
     QScrollArea *scrollArea;
@@ -44,4 +36,4 @@ private:
     QPixmap originalPixmap;
 
 };
-#endif // MAINWINDOW_H
+#endif // ROAMSCHOOL_H

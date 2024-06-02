@@ -43,6 +43,7 @@ PannableWidget::PannableWidget(const QString &imagePath, QWidget *parent)
     addButton(":res/assets/OFFICES.PNG", QPoint(86, 441),"GovOffice", 17);
     addButton(":res/assets/FOOD.PNG", QPoint(127, 129), "Food", 17);
 
+    addLocation("UP Cebu", "UP Cebu");
     addLocation("Mall", "Ayala Center Cebu");
     addLocation("Mall", "Ayala Central Block");
     addLocation("Mall", "SM City");

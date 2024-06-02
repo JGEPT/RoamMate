@@ -13,7 +13,7 @@ void DijkstraAlgorithm::loadData() {
 }
 
 void DijkstraAlgorithm::loadPoints() {
-    QFile file(":/resources/files/mapping.csv");
+    QFile file(":/res/files/mapping.csv");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Failed to open mapping.csv";
         return;
@@ -33,7 +33,7 @@ void DijkstraAlgorithm::loadPoints() {
 }
 
 void DijkstraAlgorithm::loadCostMatrix() {
-    QFile file(":/resources/files/MatrixCoordinateDistance.csv");
+    QFile file(":/res/files/MatrixCoordinateDistance.csv");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Failed to open MatrixCoordinateDistance.csv";
         return;
