@@ -158,7 +158,7 @@ MainWindow::MainWindow(QWidget *parent)
     QToolButton *toggleButton2 = new QToolButton(this);
     toggleButton2->setIcon(QIcon(":/resources/files/point.png")); // Add your icon here
     toggleButton2->setIconSize(QSize(100, 100));
-    toggleButton2->setGeometry(width() - 10, 9, 35, 35);  // Adjust the size and position as needed
+    toggleButton2->setGeometry(width() * 1.8, 9, 35, 35);  // Adjust the size and position as needed
     toggleButton2->setStyleSheet(stylesheet);
 
     // Connect the toggle button to open ImageWindow
