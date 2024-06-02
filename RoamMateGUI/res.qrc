@@ -20,5 +20,8 @@
         <file>assets/Close.png</file>
         <file>assets/Search.png</file>
         <file>assets/Exit.png</file>
+        <file>assets/History.png</file>
+        <file>assets/Destination.png</file>
+        <file>assets/Origin.png</file>
     </qresource>
 </RCC>

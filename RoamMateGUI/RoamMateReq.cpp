@@ -63,7 +63,7 @@ private:
         void CalcPrintFare() // Member function to calculate and print the fare
         {
             fare = 45 + (duration * 3.10) + (distance * 8.30);                   // Calculate the fare with the forumla
-            Route += "Estimated taxi fare: " + std::to_string((int)round(fare)) + " PHP"+'\n';                  // Store the fare to the route string
+            Route += "Estimated taxi fare: " + std::to_string((int)round(fare)) + " PHP"+"\n";                  // Store the fare to the route string
         }
     };
 
@@ -174,8 +174,8 @@ RETURNS     : This function returns nothing
             for (const auto &leg : legs) // Loops through the legs
             {
                 // Saves the duration and distance into a string
-                details.Route += '\n' + "Duration: " + (std::string)leg["duration"]["text"] +
-                                 '\n' + "Distance: " + (std::string)leg["distance"]["text"];
+                details.Route += "\nDuration: " + (std::string)leg["duration"]["text"] +
+                                 "\nDistance: " + (std::string)leg["distance"]["text"];
 
                 auto steps = leg["steps"];
                 int StepCount = 0;
@@ -228,7 +228,7 @@ RETURNS     : This function returns nothing
                 }
             }
             // Save the entire route and the estimated fare into a string.
-            details.Route += '\n' + "Route: " + details.steps + '\n' + "Fare summary: " + details.FareSum + " = " + std::to_string(details.fare) + " PHP" + '\n' + "Discounted fare summary: " + details.DiscSum + " = " + std::to_string(details.DiscFare) + " PHP" + '\n' + '\n';
+            details.Route += "\nRoute: " + details.steps + "\nFare summary: " + details.FareSum + " = " + std::to_string(details.fare) + " PHP\n" + "Discounted fare summary: " + details.DiscSum + " = " + std::to_string(details.DiscFare) + " PHP\n\n";
         }
         return details.Route;
     }
@@ -253,7 +253,7 @@ RETURNS     : This function returns nothing
             for (const auto &leg : legs) // Loop through the legs
             {
                 // Print the duration and distance for the taxi route
-                details.Route += '\n'+"Taxi Duration: " + (std::string) leg["duration"]["text"] + '\n' + "Taxi Distance: " + (std::string)leg["distance"]["text"] + '\n';
+                details.Route += "\nTaxi Duration: " + (std::string) leg["duration"]["text"] + "\nTaxi Distance: " + (std::string)leg["distance"]["text"] + "\n";
                 // Parse the duration using regex to separete the hours and mins
                 std::string duration_str = leg["duration"]["text"];
                 std::regex hours_regex(R"((\d+)\s*hour[s]?)");  // Define the regex for the hours

@@ -2,25 +2,33 @@
 #define PANNABLEWIDGET_H
 
 #include <QWidget>
-#include <QPixmap>
 #include <QPushButton>
-#include <QVector>
+#include <QPixmap>
 #include <QPoint>
-#include <QColor>
-#include <QPropertyAnimation>
 #include <QLineEdit>
-#include <QString> // Include QString
-#include <QLabel>  // Include QLabel for displaying route and fare
+#include <QScrollArea>
+#include <QLabel>
+#include <QPropertyAnimation>
+#include <QVBoxLayout>
+#include "RoamMateReq.cpp"
 
-#include "RoamMateReq.cpp" // Include the RouteRequest class
+struct ButtonInfo {
+    QPushButton *button;
+    QPoint position;
+    QString category;
+};
+
+struct Location {
+    QString category;
+    QString name;
+};
 
 class PannableWidget : public QWidget {
     Q_OBJECT
-    Q_PROPERTY(QPointF menuPosition READ menuPosition WRITE setMenuPosition NOTIFY PosChanged);
-    Q_PROPERTY(qreal menuRotation READ menuRotation WRITE setMenuRotation NOTIFY RotChanged);
-
+    Q_PROPERTY(QPointF menuPosition READ menuPosition WRITE setMenuPosition NOTIFY PosChanged)
+    Q_PROPERTY(qreal menuRotation READ menuRotation WRITE setMenuRotation NOTIFY RotChanged)
 public:
-    explicit PannableWidget(const QString &imagePath, QWidget *parent = nullptr);
+    PannableWidget(const QString &imagePath, QWidget *parent = nullptr);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -32,22 +40,24 @@ signals:
     void RotChanged();
 
 private slots:
-    void onButtonClicked();
-    void onCloseButtonClicked();
+    void onButtonClicked(const QString &category);
     void onExitButtonClicked();
+    void onCloseButtonClicked();
     void onSearchButtonClicked();
+    void onHistoryButtonClicked();
     void onSearchConfirmButtonClicked();
 
 private:
-    struct ButtonInfo {
-        QPushButton *button;
-        QPoint position;
-    };
-
-    void addButton(const QString &iconPath, const QPoint &position, int scale);
+    void addButton(const QString &iconPath, const QPoint &position, const QString &category, int scale);
     void setButtonsVisible(bool visible);
     void drawMenu(QPainter &painter);
     void drawSearchMenu(QPainter &painter);
+    void setOrigin(const QString &origin);
+    void setDestination(const QString &destination);
+    void addLocation(const QString &category, const QString &name) {
+        locations.append({category, name});
+    }
+
     QPointF menuPosition() const;
     void setMenuPosition(const QPointF &position);
     qreal menuRotation() const;
@@ -56,34 +66,43 @@ private:
     QPixmap background;
     QPoint offset;
     QPoint lastMousePos;
-    bool showMenu;
-    bool showSearchMenu;  // New flag for search menu visibility
-    QRect menuRect;
-    QRect searchMenuRect; // Rectangle for search menu
     QVector<ButtonInfo> buttons;
+
+    bool showMenu;
+    bool showSearchMenu;
+    QPointF m_menuPosition;
+    qreal m_menuRotation;
+    QRect menuRect;
+    QRect searchMenuRect;
+
+    QPushButton *ExitButton;
+    QPushButton *SearchButton;
+    QPushButton *closeButton;
+    QPushButton *searchConfirmButton;
+    QPushButton *HistoryButton;
+    QLineEdit *originLineEdit;
+    QLineEdit *destinationLineEdit;
+    QScrollArea *scrollArea;
+    QWidget *scrollAreaContent;
+    QVBoxLayout *scrollAreaLayout;
+    QLabel *processingLabel;
+    QLabel *routeLabel;
+
     QPropertyAnimation *positionAnimation;
     QPropertyAnimation *rotationAnimation;
     QPropertyAnimation *searchPositionAnimation;
     QPropertyAnimation *searchRotationAnimation;
-    QPropertyAnimation *searchButtonPositionAnimation;
-    QPointF m_menuPosition;
-    qreal m_menuRotation;
-    QPushButton *closeButton;
-    QPushButton *ExitButton;
-    QPushButton *SearchButton;
-    QPushButton *searchConfirmButton;
+
     bool ButtonClicked;
     bool SearchClicked;
-    QLineEdit *originLineEdit;
-    QLineEdit *destinationLineEdit;
-    QString originInput;
-    QString destinationInput;
+
+    QString currentCategory;
+    QVector<Location> locations; // Add this line
     QString requestResultText;
+    QVector<QWidget *> menuButtons;
 };
 
 #endif // PANNABLEWIDGET_H
-
-
 
 
 
