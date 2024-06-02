@@ -1,9 +1,24 @@
 <RCC>
     <qresource prefix="/res">
-        <file>assets/UpIcon.PNG</file>
+        <file>assets/BANK.PNG</file>
+        <file>assets/CAFE.PNG</file>
+        <file>assets/CLINIC.PNG</file>
+        <file>assets/FOOD.PNG</file>
+        <file>assets/GROCERIES.PNG</file>
+        <file>assets/GYM.PNG</file>
+        <file>assets/LAUNDRY.PNG</file>
+        <file>assets/LEISURE.PNG</file>
+        <file>assets/LIBRARY.PNG</file>
+        <file>assets/MALLS.PNG</file>
+        <file>assets/OFFICES.PNG</file>
+        <file>assets/POLICESTATION.PNG</file>
+        <file>assets/PRODUCTIVITY.PNG</file>
+        <file>assets/SCHOOL.PNG</file>
+        <file>assets/TRAVEL.PNG</file>
+        <file>assets/UPCEBU.PNG</file>
+        <file>assets/Background.png</file>
         <file>assets/Close.png</file>
-        <file>assets/Exit.png</file>
         <file>assets/Search.png</file>
-        <file>assets/background.png</file>
+        <file>assets/Exit.png</file>
     </qresource>
 </RCC>

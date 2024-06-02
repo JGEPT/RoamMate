@@ -7,6 +7,7 @@
 #include <QPainterPath>
 #include <QPropertyAnimation>
 #include <QIcon>
+#include <QLabel>
 
 PannableWidget::PannableWidget(const QString &imagePath, QWidget *parent)
     : QWidget(parent), background(imagePath), showMenu(false), showSearchMenu(false),
@@ -18,14 +19,21 @@ PannableWidget::PannableWidget(const QString &imagePath, QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground); // Make widget background transparent
 
     // Add multiple buttons
-    addButton(":res/assets/UpIcon.PNG", QPoint(893, 473));
-    addButton(":res/assets/UpIcon.PNG", QPoint(527, 269));
-    addButton(":res/assets/UpIcon.PNG", QPoint(320, 507));
-    addButton(":res/assets/UpIcon.PNG", QPoint(1439, 474));
-    addButton(":res/assets/UpIcon.PNG", QPoint(717, 667));
-    addButton(":res/assets/UpIcon.PNG", QPoint(1089, 776));
-    addButton(":res/assets/UpIcon.PNG", QPoint(1060, 233));
-
+    addButton(":res/assets/UPCEBU.PNG", QPoint(847, 420), 14);
+    addButton(":res/assets/PRODUCTIVITY.PNG", QPoint(762, 102), 17);
+    addButton(":res/assets/SCHOOL.PNG", QPoint(482, 462), 17);
+    addButton(":res/assets/POLICESTATION.PNG", QPoint(256, 682), 17);
+    addButton(":res/assets/LEISURE.PNG", QPoint(1363, 227), 17);
+    addButton(":res/assets/CAFE.PNG", QPoint(656, 705), 17);
+    addButton(":res/assets/BANK.PNG", QPoint(1081, 724), 17);
+    addButton(":res/assets/GYM.PNG", QPoint(1142, 406), 17);
+    addButton(":res/assets/MALLS.PNG", QPoint(1056, 128), 17);
+    addButton(":res/assets/LAUNDRY.PNG", QPoint(1500, 705), 17);
+    addButton(":res/assets/CLINIC.PNG", QPoint(1632, 430), 17);
+    addButton(":res/assets/TRAVEL.PNG", QPoint(1631, 129), 17);
+    addButton(":res/assets/GROCERIES.PNG", QPoint(411, 194), 17);
+    addButton(":res/assets/OFFICES.PNG", QPoint(86, 441), 17);
+    addButton(":res/assets/FOOD.PNG", QPoint(127, 129), 17);
     // Initialize the animations
     positionAnimation = new QPropertyAnimation(this, "menuPosition");
     positionAnimation->setDuration(150); // Duration in milliseconds
@@ -120,12 +128,12 @@ PannableWidget::PannableWidget(const QString &imagePath, QWidget *parent)
     destinationLineEdit->setFixedSize(550, 40); // Set the size of the destination line edit
 }
 
-void PannableWidget::addButton(const QString &iconPath, const QPoint &position) {
+void PannableWidget::addButton(const QString &iconPath, const QPoint &position, int scale) {
     QPushButton *button = new QPushButton(this);
     QPixmap buttonImage(iconPath);
     button->setIcon(QIcon(buttonImage));
-    button->setIconSize(buttonImage.size() / 1.5);
-    button->setFixedSize(buttonImage.size() / 1.5);
+    button->setIconSize(buttonImage.size() / scale);
+    button->setFixedSize(buttonImage.size() / scale);
     button->setFlat(true); // Make button background transparent
 
     // Connect the button's clicked signal to the onButtonClicked slot
@@ -195,6 +203,14 @@ void PannableWidget::paintEvent(QPaintEvent *event) {
         destinationLineEdit->setVisible(true);
         searchConfirmButton->move(m_menuPosition.x() + 535, m_menuPosition.y() + 150);
         searchConfirmButton->setVisible(true);
+
+        // Draw the request result text
+        painter.save();
+        painter.setFont(QFont("p5Hatty", 12));
+        painter.setPen(Qt::white);
+        QRect textRect(m_menuPosition.x() + 50, m_menuPosition.y() + 200, searchMenuRect.width() - 40, searchMenuRect.height() - 300);
+        painter.drawText(textRect, Qt::AlignLeft | Qt::TextWordWrap, requestResultText);
+        painter.restore();
     } else {
         // Hide the text input bars and search confirmation button
         originLineEdit->setVisible(false);
@@ -373,7 +389,13 @@ void PannableWidget::setMenuRotation(qreal rotation) {
 
 
 void PannableWidget::onSearchConfirmButtonClicked() {
-    qDebug() << "Search confirmed with origin:" << originInput << "and destination:" << destinationInput;
-    // Add logic to handle the search here
+    QString origin = originLineEdit->text();
+    QString destination = destinationLineEdit->text();
+    qDebug() << "Search confirmed with origin:" << origin << "and destination:" << destination;
+
+    RouteRequest RoamMate;
+    requestResultText = QString::fromStdString(RoamMate.makeRequest(origin.toStdString(), destination.toStdString()));
+
+    update();
 }
 
