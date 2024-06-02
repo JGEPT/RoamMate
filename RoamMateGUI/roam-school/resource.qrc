@@ -4,5 +4,7 @@
         <file>files/MatrixCoordinateDistance.csv</file>
         <file>files/magnifying.png</file>
         <file>files/school-map.jpg</file>
+        <file>files/Legend.png</file>
+        <file>files/point.png</file>
     </qresource>
 </RCC>

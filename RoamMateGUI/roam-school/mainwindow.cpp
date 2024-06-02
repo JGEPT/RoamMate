@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "imagewindow.h"
 #include "dijkstra_algorithm.h"
 #include <QFile>
 #include <cstring>
@@ -26,9 +27,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     QPixmap backgroundImage(":/resources/files/school-map.jpg");
 
-
     // Scale the background image
-    backgroundImage = backgroundImage.scaled(backgroundImage.size() * 0.5); // Increase size by a factor of 1.25
+    backgroundImage = backgroundImage.scaled(backgroundImage.size() * 0.5);
 
     // Create a label to display the background image
     QLabel *backgroundLabel = new QLabel;
@@ -41,16 +41,17 @@ MainWindow::MainWindow(QWidget *parent)
     setCentralWidget(scrollArea);
 
     // Create a widget to overlay on top of the background image
-    QWidget *overlayWidget = new QWidget(this);
-    overlayWidget->setGeometry(10, 10, 400, 350);  // Adjust the size and position as needed
+    overlayWidget1 = new QWidget(this);
+    overlayWidget1->setGeometry(10, 10, 400, 350);
 
     // Define the custom stylesheet
     QString stylesheet = R"(
-        QWidget#overlayWidget {
+        QWidget#overlayWidget1 {
             background-color: rgba(102, 25, 19, 200);
             border: 1px solid #000000;
             border-radius: 10px;
         }
+
         QLabel {
             font-size: 14px;
             font-weight: bold;
@@ -86,22 +87,25 @@ MainWindow::MainWindow(QWidget *parent)
             width: auto;
             border: none;
         }
+        QToolButton#toggleButton2 {
+            background-color: white;
+        }
     )";
 
-    // Apply the stylesheet to the overlay widget and its children
-    overlayWidget->setObjectName("overlayWidget");
-    overlayWidget->setStyleSheet(stylesheet);
+    // Apply the stylesheet to the overlay widgets and their children
+    overlayWidget1->setObjectName("overlayWidget1");
+    overlayWidget1->setStyleSheet(stylesheet);
 
-    // Create labels and comboboxes
-    QLabel *sourceLabel = new QLabel("Source:", overlayWidget);
-    QLabel *destinationLabel = new QLabel("Destination:", overlayWidget);
+    // Create labels and comboboxes for the first overlay widget
+    QLabel *sourceLabel = new QLabel("Source:", overlayWidget1);
+    QLabel *destinationLabel = new QLabel("Destination:", overlayWidget1);
 
     // Set alignment for the labels
     sourceLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     destinationLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    sourceBox = new QComboBox(overlayWidget);
-    destinationBox = new QComboBox(overlayWidget);
+    sourceBox = new QComboBox(overlayWidget1);
+    destinationBox = new QComboBox(overlayWidget1);
 
     QString filepath = ":/resources/files/mapping.csv";
     readToComboBoxFromFile(filepath);
@@ -112,35 +116,33 @@ MainWindow::MainWindow(QWidget *parent)
     connect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_sourceBox_currentIndexChanged);
     connect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::on_destinationBox_currentIndexChanged);
 
-
-    // Create the additional widgets
-    outputTextEdit = new QPlainTextEdit(overlayWidget);
-    outputLineEdit = new QLineEdit(overlayWidget);
+    // Create the additional widgets for the first overlay widget
+    outputTextEdit = new QPlainTextEdit(overlayWidget1);
+    outputLineEdit = new QLineEdit(overlayWidget1);
     outputTextEdit->setReadOnly(true);
     outputLineEdit->setReadOnly(true);
 
-    QPushButton *submitButton = new QPushButton("Submit", overlayWidget);
+    QPushButton *submitButton = new QPushButton("Submit", overlayWidget1);
     // Connect the clicked signal of the QPushButton to the submitButtonClicked slot function
     connect(submitButton, &QPushButton::clicked, this, &MainWindow::submitButtonClicked);
 
-    // Create labels
-    QLabel *outputTextLabel = new QLabel("Shortest Path:", overlayWidget);
-    QLabel *outputLineEditLabel = new QLabel("Distance Covered:", overlayWidget);
+    // Create labels for the first overlay widget
+    QLabel *outputTextLabel = new QLabel("Shortest Path:", overlayWidget1);
+    QLabel *outputLineEditLabel = new QLabel("Distance Covered:", overlayWidget1);
 
-    // Create a layout for the overlay widget
-    QVBoxLayout *overlayLayout = new QVBoxLayout(overlayWidget);
-    overlayLayout->addWidget(sourceLabel);
-    overlayLayout->addWidget(sourceBox);
-    overlayLayout->addWidget(destinationLabel);
-    overlayLayout->addWidget(destinationBox);
-    overlayLayout->addWidget(outputTextLabel);
-    overlayLayout->addWidget(outputTextEdit);
-    overlayLayout->addWidget(outputLineEditLabel);
-    overlayLayout->addWidget(outputLineEdit);
-    overlayLayout->addWidget(submitButton);
+    // Create a layout for the first overlay widget
+    QVBoxLayout *overlayLayout1 = new QVBoxLayout(overlayWidget1);
+    overlayLayout1->addWidget(sourceLabel);
+    overlayLayout1->addWidget(sourceBox);
+    overlayLayout1->addWidget(destinationLabel);
+    overlayLayout1->addWidget(destinationBox);
+    overlayLayout1->addWidget(outputTextLabel);
+    overlayLayout1->addWidget(outputTextEdit);
+    overlayLayout1->addWidget(outputLineEditLabel);
+    overlayLayout1->addWidget(outputLineEdit);
+    overlayLayout1->addWidget(submitButton);
 
     // Create the toggle button
-
     QToolButton *toggleButton = new QToolButton(this);
     toggleButton->setIcon(QIcon(":/resources/files/magnifying.png")); // Add your icon here
     toggleButton->setIconSize(QSize(100, 100));
@@ -148,12 +150,23 @@ MainWindow::MainWindow(QWidget *parent)
     toggleButton->setStyleSheet(stylesheet);
 
     // Connect the toggle button to a slot to toggle the overlay visibility
-    connect(toggleButton, &QToolButton::clicked, [overlayWidget]() {
-        overlayWidget->setVisible(!overlayWidget->isVisible());
+    connect(toggleButton, &QToolButton::clicked, this, [this]() {
+        overlayWidget1->setVisible(!overlayWidget1->isVisible());
     });
 
-    // Ensure the overlay widget and toggle button are always on top
-    overlayWidget->raise();
+    //Create the toggle button for the second overlay widget
+    QToolButton *toggleButton2 = new QToolButton(this);
+    toggleButton2->setIcon(QIcon(":/resources/files/point.png")); // Add your icon here
+    toggleButton2->setIconSize(QSize(100, 100));
+    toggleButton2->setGeometry(width() - 10, 9, 35, 35);  // Adjust the size and position as needed
+    toggleButton2->setStyleSheet(stylesheet);
+
+    // Connect the toggle button to open ImageWindow
+    connect(toggleButton2, &QToolButton::clicked, this, &MainWindow::toggleButton2Clicked);
+
+
+    // Ensure the overlay widgets and toggle button are always on top
+    overlayWidget1->raise();
     toggleButton->raise();
 }
 
@@ -161,6 +174,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 
 void MainWindow::readToComboBoxFromFile(const QString &filePath) {
@@ -183,6 +197,16 @@ void MainWindow::readToComboBoxFromFile(const QString &filePath) {
     }
 
     file.close();
+}
+
+void MainWindow::toggleButton2Clicked()
+{
+    // Specify the file path to the image
+    QString imagePath = ":/resources/files/Legend.png"; // Update with your image file path
+
+    // Open the ImageWindow with the specified image file path
+    ImageWindow *imageWindow = new ImageWindow(imagePath, this);
+    imageWindow->show();
 }
 
 void MainWindow::submitButtonClicked() {
