@@ -7,6 +7,7 @@
 #include <QComboBox>
 #include <QPlainTextEdit>
 #include <QLineEdit>
+#include <QPushButton>
 
 class RoamSchool : public QWidget
 {
@@ -20,6 +21,7 @@ private slots:
     void on_sourceBox_currentIndexChanged();
     void on_destinationBox_currentIndexChanged();
     void toggleButton2Clicked();
+    void onExitButtonClicked();
 
 
 private:
@@ -34,6 +36,7 @@ private:
     QWidget *overlayWidget2;
     QLabel *imageLabel;
     QPixmap originalPixmap;
+    QPushButton *ExitButton;
 
 };
 #endif // ROAMSCHOOL_H

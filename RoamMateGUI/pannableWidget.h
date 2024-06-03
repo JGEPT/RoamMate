@@ -36,6 +36,8 @@ protected:
     void mouseMoveEvent(QMouseEvent *event) override;
 
 signals:
+    void buttonPressed(); // Add this signal
+    void closePressed(); // Add this signal
     void PosChanged();
     void RotChanged();
 

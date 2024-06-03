@@ -15,6 +15,8 @@ public:
 
 private slots:
     void switchWidget();
+    void hideSwapButton();
+    void showSwapButton();
 
 private:
     QStackedWidget *stackedWidget;

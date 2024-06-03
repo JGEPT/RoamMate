@@ -36,6 +36,15 @@ RoamSchool::RoamSchool(QWidget *parent)
     scrollArea->setWidgetResizable(true);
     scrollArea->setWidget(backgroundLabel);
 
+    // Get the screen resolution
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = screen->geometry();
+    int screenWidth = screenGeometry.width();
+    int screenHeight = screenGeometry.height();
+
+    // Set the window size to the screen size
+    scrollArea->setFixedSize(screenWidth, screenHeight);
+
     // Create a widget to overlay on top of the background image
     overlayWidget1 = new QWidget(this);
     overlayWidget1->setGeometry(10, 10, 400, 350);
@@ -154,12 +163,22 @@ RoamSchool::RoamSchool(QWidget *parent)
     QToolButton *toggleButton2 = new QToolButton(this);
     toggleButton2->setIcon(QIcon(":/res/files/point.png")); // Add your icon here
     toggleButton2->setIconSize(QSize(100, 100));
-    toggleButton2->setGeometry(width() * 1.8, 9, 35, 35);  // Adjust the size and position as needed
+    toggleButton2->setGeometry(50, 9, 35, 35);  // Adjust the size and position as needed
     toggleButton2->setStyleSheet(stylesheet);
 
     // Connect the toggle button to open ImageWindow
     connect(toggleButton2, &QToolButton::clicked, this, &RoamSchool::toggleButton2Clicked);
 
+    // Initialize the exit button
+    ExitButton = new QPushButton(this);
+    QPixmap ExitPixmap(":res/assets/Exit.png");
+    ExitButton->setIcon(QIcon(ExitPixmap));
+    ExitButton->setIconSize(ExitPixmap.size() / 6);
+    ExitButton->setFixedSize(ExitPixmap.size() / 6);
+    ExitButton->setFlat(true); // Make button background transparent
+    ExitButton->setVisible(true);
+    ExitButton->move(screenGeometry.width() - 85, 10);
+    connect(ExitButton, &QPushButton::clicked, this, &RoamSchool::onExitButtonClicked);
 
     // Ensure the overlay widgets and toggle button are always on top
     overlayWidget1->raise();
@@ -279,4 +298,6 @@ void RoamSchool::on_destinationBox_currentIndexChanged()
     connect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_sourceBox_currentIndexChanged);
 }
 
-
+void RoamSchool::onExitButtonClicked() {
+    QCoreApplication::quit();
+}

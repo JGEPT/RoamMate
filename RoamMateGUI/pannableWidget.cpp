@@ -118,8 +118,8 @@ PannableWidget::PannableWidget(const QString &imagePath, QWidget *parent)
     ExitButton = new QPushButton(this);
     QPixmap ExitPixmap(":res/assets/Exit.png");
     ExitButton->setIcon(QIcon(ExitPixmap));
-    ExitButton->setIconSize(ExitPixmap.size() / 1.5);
-    ExitButton->setFixedSize(ExitPixmap.size() / 1.5);
+    ExitButton->setIconSize(ExitPixmap.size() / 6);
+    ExitButton->setFixedSize(ExitPixmap.size() / 6);
     ExitButton->setFlat(true); // Make button background transparent
     ExitButton->setVisible(true);
     connect(ExitButton, &QPushButton::clicked, this, &PannableWidget::onExitButtonClicked);
@@ -258,7 +258,7 @@ void PannableWidget::paintEvent(QPaintEvent *event) {
     // Adjust exit button position
     QScreen *screen = QGuiApplication::primaryScreen();
     QRect screenGeometry = screen->geometry();
-    ExitButton->move(screenGeometry.width() - 75, 10);
+    ExitButton->move(screenGeometry.width() - 85, 10);
 
     // Adjust search button position
     SearchButton->move(-15, 40);
@@ -368,6 +368,7 @@ void PannableWidget::onButtonClicked(const QString &category) {
     rotationAnimation->start();
     ExitButton->setVisible(false);
     update();
+    emit buttonPressed();
 }
 
 void PannableWidget::onExitButtonClicked() {
@@ -390,6 +391,7 @@ void PannableWidget::onCloseButtonClicked() {
     for (auto button : menuButtons) {
         button->setVisible(false);
     }
+    emit closePressed();
 }
 
 void PannableWidget::onSearchButtonClicked() {
