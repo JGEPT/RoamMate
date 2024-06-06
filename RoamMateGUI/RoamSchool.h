@@ -30,13 +30,14 @@ private:
     QScrollArea *scrollArea;
     QComboBox *sourceBox;
     QComboBox *destinationBox;
-    QPlainTextEdit *outputTextEdit;
+    QLabel *outputTextEdit;
     QLineEdit *outputLineEdit;
     QWidget *overlayWidget1;
     QWidget *overlayWidget2;
     QLabel *imageLabel;
     QPixmap originalPixmap;
     QPushButton *ExitButton;
+    QString filepath;
 
 };
 #endif // ROAMSCHOOL_H

@@ -63,6 +63,15 @@ RoamSchool::RoamSchool(QWidget *parent)
             color: #ffffff;
         }
 
+        QLabel#outputLineEdit{
+            background-color: rgb(184, 82, 73);
+            border: none;
+            padding: 5px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
         QComboBox {
             background-color: rgb(184, 82, 73);
             border: none;
@@ -79,7 +88,7 @@ RoamSchool::RoamSchool(QWidget *parent)
             font-size: 10px;
             font-weight: normal;
         }
-        QPlainTextEdit, QLineEdit, QPushButton {
+        QLineEdit, QPushButton {
             background-color: rgb(184, 82, 73);
             border: none;
             padding: 5px;
@@ -112,7 +121,7 @@ RoamSchool::RoamSchool(QWidget *parent)
     sourceBox = new QComboBox(overlayWidget1);
     destinationBox = new QComboBox(overlayWidget1);
 
-    QString filepath = ":/res/files/mapping.csv";
+    filepath = ":/res/files/mapping.csv";
     readToComboBoxFromFile(filepath);
 
     sourceBox->setCurrentIndex(0);
@@ -122,9 +131,9 @@ RoamSchool::RoamSchool(QWidget *parent)
     connect(destinationBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_destinationBox_currentIndexChanged);
 
     // Create the additional widgets for the first overlay widget
-    outputTextEdit = new QPlainTextEdit(overlayWidget1);
+    outputTextEdit = new QLabel(overlayWidget1);
     outputLineEdit = new QLineEdit(overlayWidget1);
-    outputTextEdit->setReadOnly(true);
+    outputTextEdit->setStyleSheet(stylesheet);
     outputLineEdit->setReadOnly(true);
 
     QPushButton *submitButton = new QPushButton("Submit", overlayWidget1);
@@ -254,12 +263,17 @@ void RoamSchool::submitButtonClicked() {
     DijkstraAlgorithm dijkstra;
 
     outputTextEdit->clear();
+    QString Output;
     QVector<QString> path = dijkstra.findShortestPath(sourceNode, destNode);
     for (int i = 0;  i < path.size(); i++) {
-        outputTextEdit->appendPlainText(path[i]);
+        Output += path[i];
         if ( i < path.size() - 1)
-            outputTextEdit->appendPlainText(" >> ");
+            Output += " >> ";
     }
+    outputTextEdit->setText(Output);
+    outputTextEdit->setWordWrap(true); // Enable word wrap for the label
+    outputTextEdit->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    outputTextEdit->adjustSize();
 
     QString combinedText = dijkstra.getDistance(destNode) + " meters";
     outputLineEdit->setText(combinedText);
@@ -288,14 +302,6 @@ void RoamSchool::on_destinationBox_currentIndexChanged()
 {
     // Retrieve the selected item text from destinationBox
     QString selectedItem = destinationBox->currentText();
-
-    // Remove the selected item from sourceBox
-    disconnect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_sourceBox_currentIndexChanged);
-    int indexToRemove = sourceBox->findText(selectedItem);
-    if (indexToRemove != -1) {
-        sourceBox->removeItem(indexToRemove);
-    }
-    connect(sourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &RoamSchool::on_sourceBox_currentIndexChanged);
 }
 
 void RoamSchool::onExitButtonClicked() {
